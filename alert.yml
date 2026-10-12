@@ -1,0 +1,21 @@
+name: Nasdaq Alert Bot
+
+on:
+  schedule:
+    # Runs every 15 mins Monday to Friday during US market hours (13:30 to 20:00 UTC)
+    - cron: '*/15 13-20 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  check-nasdaq:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install yfinance requests
+      - env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor.py
